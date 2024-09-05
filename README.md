@@ -1,8 +1,8 @@
-# (TODO: your game's title)
+# Whack-a-Key
 
-Author: (TODO: your name)
+Author: Shao-Ju Wang
 
-Design: (TODO: In two sentences or fewer, describe what is new and interesting about your game.)
+Design: This game is adapted from Whackamole game, and does need the user to check the location of the popped up key before they press the key.
 
 Screen Shot:
 
@@ -12,11 +12,12 @@ How Your Asset Pipeline Works:
 
 (TODO: describe the steps in your asset pipeline, from source files to tiles/backgrounds/whatever you upload to the PPU466.)
 
-(TODO: make sure the source files you drew are included. You can [link](your/file.png) to them to be a bit fancier.)
+All sourcefiles are in the "assets" folder
 
 How To Play:
 
-(TODO: describe the controls and (if needed) goals/strategy.)
+The game will randomly show a key in leftmost 3x3 keys (q,w,e,a,s,d,z,x,c) at any time on the 3x3 matrix, but may be at different location. 
+ONLY CLICK THE KEY IF IT'S ON THE RIGHT POSITION!!!
 
 This game was built with [NEST](NEST.md).
 
