@@ -21,7 +21,7 @@ struct PlayMode : Mode {
 	struct Button {
 		uint8_t downs = 0;
 		uint8_t pressed = 0;
-	} left, right, down, up;
+	} q, w, e, a, s, d, z, x, c;
 
 	//some weird background animation:
 	float background_fade = 0.0f;

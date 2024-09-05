@@ -6,6 +6,11 @@
 //for glm::value_ptr() :
 #include <glm/gtc/type_ptr.hpp>
 
+#ifndef LOAD_SAVE_PNG
+#include "load_save_png.hpp"
+#endif // !LOAD_SAVE_PNG
+
+
 #include <random>
 
 PlayMode::PlayMode() {
@@ -19,7 +24,7 @@ PlayMode::PlayMode() {
 	//Also, *don't* use these tiles in your game:
 
 	{ //use tiles 0-16 as some weird dot pattern thing:
-		std::array< uint8_t, 8*8 > distance;
+	/*	std::array< uint8_t, 8*8 > distance;
 		for (uint32_t y = 0; y < 8; ++y) {
 			for (uint32_t x = 0; x < 8; ++x) {
 				float d = glm::length(glm::vec2((x + 0.5f) - 4.0f, (y + 0.5f) - 4.0f));
@@ -46,61 +51,64 @@ PlayMode::PlayMode() {
 			}
 			ppu.tile_table[index] = tile;
 		}
-	}
+	}*/
 
-	//use sprite 32 as a "player":
-	ppu.tile_table[32].bit0 = {
-		0b01111110,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b11111111,
-		0b01111110,
-	};
-	ppu.tile_table[32].bit1 = {
-		0b00000000,
-		0b00000000,
-		0b00011000,
-		0b00100100,
-		0b00000000,
-		0b00100100,
-		0b00000000,
-		0b00000000,
-	};
+	////use sprite 32 as a "player":
+	//ppu.tile_table[32].bit0 = {
+	//	0b01111110,
+	//	0b11111111,
+	//	0b11111111,
+	//	0b11111111,
+	//	0b11111111,
+	//	0b11111111,
+	//	0b11111111,
+	//	0b01111110,
+	//};
+	//ppu.tile_table[32].bit1 = {
+	//	0b00000000,
+	//	0b00000000,
+	//	0b00011000,
+	//	0b00100100,
+	//	0b00000000,
+	//	0b00100100,
+	//	0b00000000,
+	//	0b00000000,
+	//};
 
 	//makes the outside of tiles 0-16 solid:
 	ppu.palette_table[0] = {
-		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
+		glm::u8vec4(0x00, 0x00, 0x00, 0x2c),	//background color, light cyan
 		glm::u8vec4(0x00, 0x00, 0x00, 0xff),
-		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
-		glm::u8vec4(0x00, 0x00, 0x00, 0xff),
-	};
-
-	//makes the center of tiles 0-16 solid:
-	ppu.palette_table[1] = {
-		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
-		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
-		glm::u8vec4(0x00, 0x00, 0x00, 0xff),
+		glm::u8vec4(0x00, 0x00, 0x00, 0x00),	//key boundary color
 		glm::u8vec4(0x00, 0x00, 0x00, 0xff),
 	};
 
-	//used for the player:
-	ppu.palette_table[7] = {
-		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
-		glm::u8vec4(0xff, 0xff, 0x00, 0xff),
-		glm::u8vec4(0x00, 0x00, 0x00, 0xff),
-		glm::u8vec4(0x00, 0x00, 0x00, 0xff),
-	};
+	////makes the center of tiles 0-16 solid:
+	//ppu.palette_table[1] = {
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0x00),
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0x00),
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0xff),
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0xff),
+	//};
 
-	//used for the misc other sprites:
-	ppu.palette_table[6] = {
-		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
-		glm::u8vec4(0x88, 0x88, 0xff, 0xff),
-		glm::u8vec4(0x00, 0x00, 0x00, 0xff),
-		glm::u8vec4(0x00, 0x00, 0x00, 0x00),
-	};
+	////used for the player:
+	//ppu.palette_table[7] = {
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0x00),
+	//	glm::u8vec4(0xff, 0xff, 0x00, 0xff),
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0xff),
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0xff),
+	//};
+
+	////used for the misc other sprites:
+	//ppu.palette_table[6] = {
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0x00),
+	//	glm::u8vec4(0x88, 0x88, 0xff, 0xff),
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0xff),
+	//	glm::u8vec4(0x00, 0x00, 0x00, 0x00),
+	//};
+
+	uint8_t count = 0;
+	load_png("/assets/blank.png", nullptr, ppu.tile_table[count++], LowerLeftOrigin);
 
 }
 
@@ -110,10 +118,10 @@ PlayMode::~PlayMode() {
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 
 	if (evt.type == SDL_KEYDOWN) {
-		if (evt.key.keysym.sym == SDLK_LEFT) {
+		/*if (evt.key.keysym.sym == SDLK_LEFT) {
 			left.downs += 1;
 			left.pressed = true;
-			return true;
+			return true; 
 		} else if (evt.key.keysym.sym == SDLK_RIGHT) {
 			right.downs += 1;
 			right.pressed = true;
@@ -126,8 +134,49 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			down.downs += 1;
 			down.pressed = true;
 			return true;
+		}*/
+		switch (evt.key.keysym.sym)
+		{
+		case SDLK_q:
+			q.downs += 1;
+			q.pressed = true;
+			return true;
+		case SDLK_w:
+			w.downs += 1;
+			w.pressed = true;
+			return true;
+		case SDLK_e:
+			e.downs += 1;
+			e.pressed = true;
+			return true;
+		case SDLK_a:
+			a.downs += 1;
+			a.pressed = true;
+			return true;
+		case SDLK_s:
+			s.downs += 1;
+			s.pressed = true;
+			return true;
+		case SDLK_d:
+			d.downs += 1;
+			d.pressed = true;
+			return true;
+		case SDLK_z:
+			z.downs += 1;
+			z.pressed = true;
+			return true;
+		case SDLK_x:
+			x.downs += 1;
+			x.pressed = true;
+			return true;
+		case SDLK_c:
+			c.downs += 1;
+			c.pressed = true;
+			return true;
+		default:
+			return false;
 		}
-	} else if (evt.type == SDL_KEYUP) {
+	} /*else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_LEFT) {
 			left.pressed = false;
 			return true;
@@ -141,7 +190,7 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			down.pressed = false;
 			return true;
 		}
-	}
+	}*/
 
 	return false;
 }
@@ -150,8 +199,8 @@ void PlayMode::update(float elapsed) {
 
 	//slowly rotates through [0,1):
 	// (will be used to set background color)
-	background_fade += elapsed / 10.0f;
-	background_fade -= std::floor(background_fade);
+	//background_fade += elapsed / 10.0f;/*
+	//background_fade -= std::floor(background_fade);*/
 
 	constexpr float PlayerSpeed = 30.0f;
 	if (left.pressed) player_at.x -= PlayerSpeed * elapsed;
@@ -170,12 +219,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//--- set ppu state based on game state ---
 
 	//background color will be some hsv-like fade:
-	ppu.background_color = glm::u8vec4(
+	ppu.b/*ackground_color = glm::u8vec4(
 		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 0.0f / 3.0f) ) ) ))),
 		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 1.0f / 3.0f) ) ) ))),
 		std::min(255,std::max(0,int32_t(255 * 0.5f * (0.5f + std::sin( 2.0f * M_PI * (background_fade + 2.0f / 3.0f) ) ) ))),
 		0xff
-	);
+	);*/
 
 	//tilemap gets recomputed every frame as some weird plasma thing:
 	//NOTE: don't do this in your game! actually make a map or something :-)
